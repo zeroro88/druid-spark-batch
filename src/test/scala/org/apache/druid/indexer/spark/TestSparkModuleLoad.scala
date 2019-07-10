@@ -17,9 +17,20 @@
  *  under the License.
  */
 
-package io.druid.indexer.spark
+package org.apache.druid.indexer.spark
 
-object TaskConfProvider
+import java.util.ServiceLoader
+
+import org.apache.druid.initialization.DruidModule
+import org.scalatest.{FlatSpec, Matchers}
+
+import scala.collection.JavaConverters._
+
+class TestSparkModuleLoad  extends FlatSpec with Matchers
 {
-  val taskConfURL = getClass.getResource("/" + SparkBatchIndexTask.TASK_TYPE_BASE + "_2.10_spec.json")
+  "SparkDruidIndexerModules" should "load version 2.10 properly" in {
+    val loader: ServiceLoader[DruidModule] = ServiceLoader.load(classOf[DruidModule], classOf[TestSparkDruidIndexerModule].getClassLoader)
+    val module: DruidModule = loader.asScala.head
+    module.isInstanceOf[SparkDruidIndexerModule] should be(true)
+  }
 }

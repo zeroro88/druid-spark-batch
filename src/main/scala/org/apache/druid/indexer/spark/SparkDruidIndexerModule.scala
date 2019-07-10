@@ -17,14 +17,16 @@
  *  under the License.
  */
 
-package io.druid.indexer.spark
+package org.apache.druid.indexer.spark
+
+import java.util
 
 import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.jsontype.NamedType
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.google.inject.Binder
-import io.druid.initialization.DruidModule
-import java.util
+import org.apache.druid.initialization.DruidModule
+
 import scala.collection.JavaConverters._
 
 class SparkDruidIndexerModule extends DruidModule

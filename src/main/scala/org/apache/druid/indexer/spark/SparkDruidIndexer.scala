@@ -17,11 +17,12 @@
  *  under the License.
  */
 
-package io.druid.indexer.spark
+package org.apache.druid.indexer.spark
 
 import java.io._
 import java.nio.file.Files
 import java.util
+
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, KryoSerializable}
 import com.fasterxml.jackson.core.`type`.TypeReference
@@ -29,29 +30,28 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Closer
 import com.google.inject.name.Names
 import com.google.inject.{Binder, Injector, Key, Module}
-import io.druid.data.input.MapBasedInputRow
-import io.druid.data.input.impl._
-import io.druid.guice.annotations.{Json, Self}
-import io.druid.guice.{GuiceInjectors, JsonConfigProvider}
-import io.druid.indexer.HadoopyStringInputRowParser
-import io.druid.initialization.Initialization
-import io.druid.java.util.common.{IAE, ISE}
-import io.druid.java.util.common.granularity.Granularity
-import io.druid.java.util.common.lifecycle.Lifecycle
-import io.druid.java.util.common.logger.Logger
-import io.druid.java.util.emitter.service.ServiceEmitter
-import io.druid.java.util.emitter.service.ServiceMetricEvent
-import io.druid.query.aggregation.AggregatorFactory
-import io.druid.segment._
-import io.druid.segment.column.ColumnConfig
-import io.druid.segment.incremental.{IncrementalIndex, IncrementalIndexSchema}
-import io.druid.segment.indexing.DataSchema
-import io.druid.segment.loading.DataSegmentPusher
-import io.druid.segment.writeout.TmpFileSegmentWriteOutMediumFactory
-import io.druid.server.DruidNode
-import io.druid.timeline.DataSegment
-import io.druid.timeline.partition.{HashBasedNumberedShardSpec, NoneShardSpec, ShardSpec}
 import org.apache.commons.io.FileUtils
+import org.apache.druid.data.input.MapBasedInputRow
+import org.apache.druid.data.input.impl._
+import org.apache.druid.guice.annotations.{Json, Self}
+import org.apache.druid.guice.{GuiceInjectors, JsonConfigProvider}
+import org.apache.druid.indexer.HadoopyStringInputRowParser
+import org.apache.druid.initialization.Initialization
+import org.apache.druid.java.util.common.granularity.Granularity
+import org.apache.druid.java.util.common.lifecycle.Lifecycle
+import org.apache.druid.java.util.common.logger.Logger
+import org.apache.druid.java.util.common.{IAE, ISE}
+import org.apache.druid.java.util.emitter.service.{ServiceEmitter, ServiceMetricEvent}
+import org.apache.druid.query.aggregation.AggregatorFactory
+import org.apache.druid.segment._
+import org.apache.druid.segment.column.ColumnConfig
+import org.apache.druid.segment.incremental.{IncrementalIndex, IncrementalIndexSchema}
+import org.apache.druid.segment.indexing.DataSchema
+import org.apache.druid.segment.loading.DataSegmentPusher
+import org.apache.druid.segment.writeout.TmpFileSegmentWriteOutMediumFactory
+import org.apache.druid.server.DruidNode
+import org.apache.druid.timeline.DataSegment
+import org.apache.druid.timeline.partition.{HashBasedNumberedShardSpec, NoneShardSpec, ShardSpec}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.spark.rdd.RDD
@@ -59,6 +59,7 @@ import org.apache.spark.scheduler.{AccumulableInfo, SparkListener, SparkListener
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{Partitioner, SparkContext}
 import org.joda.time.{DateTime, Interval}
+
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
@@ -430,7 +431,7 @@ object SparkDruidIndexer {
 }
 
 object SerializedJsonStatic {
-  val LOG = new Logger("io.druid.indexer.spark.SerializedJsonStatic")
+  val LOG = new Logger("SerializedJsonStatic")
   val defaultService = "spark-indexer"
   // default indexing service port
   val defaultPort = "8090"
@@ -529,7 +530,7 @@ class SerializedJson[A](inputDelegate: A) extends KryoSerializable with Serializ
   def innerWrite(output: OutputStream): Unit = SerializedJsonStatic.mapper
     .writeValue(SerializedJsonStatic.captureCloseOutputStream(output), toJavaMap)
 
-  def toJavaMap = mapAsJavaMap(
+  def toJavaMap = scala.collection.JavaConversions.mapAsJavaMap(
     Map(
       "class" -> delegate.getClass.getCanonicalName,
       "delegate" -> SerializedJsonStatic.mapper.writeValueAsString(delegate)
@@ -729,7 +730,6 @@ class DateBucketAndHashPartitioner(@transient var gran: Granularity,
 object StaticIndex {
   val INDEX_IO = new IndexIO(
     SerializedJsonStatic.mapper,
-    TmpFileSegmentWriteOutMediumFactory.instance(),
     new ColumnConfig {
       override def columnCacheSizeBytes(): Int = 1000000
     }

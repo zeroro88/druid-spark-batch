@@ -16,20 +16,20 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-organization := "io.druid.extensions"
+organization := "org.apache.druid.extensions"
 name := "druid-spark-batch"
 
 licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("https://github.com/metamx/druid-spark-batch"))
-crossScalaVersions := Seq("2.11.12", "2.10.6")
+scalaVersion := "2.12.8"
 releaseIgnoreUntrackedFiles := true
 
-val druid_version = "0.12.1-rc3-SNAPSHOT"
+val druid_version = "0.14.2-incubating"
 // This is just used here for Path, so anything that doesn't break spark should be fine
-val hadoop_version = "2.7.3"
-val spark_version = "2.1.0"
+val hadoop_version = "2.8.3"
+val spark_version = "2.4.2"
 val guava_version = "16.0.1"
-val mesos_version = "0.25.0"
+val mesos_version = "1.8.0"
 
 val sparkDep = ("org.apache.spark" %% "spark-core" % spark_version
   exclude("org.roaringbitmap", "RoaringBitmap")
@@ -94,11 +94,12 @@ val hadoopDep = ("org.apache.hadoop" % "hadoop-client" % hadoop_version
 // For Path
 libraryDependencies += hadoopDep
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-libraryDependencies += "io.druid" % "druid-processing" % druid_version % "provided"
-libraryDependencies += "io.druid" % "druid-server" % druid_version % "provided"
-libraryDependencies += "io.druid" % "druid-indexing-service" % druid_version % "provided"
-libraryDependencies += "io.druid" % "druid-indexing-hadoop" % druid_version % "provided"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+//libraryDependencies += "com.github.apache" % "incubator-druid" % druid_version % "provided"
+libraryDependencies += ("org.apache.druid" % "druid-processing" % druid_version exclude("io.dropwizard.metrics", "metrics-core")) % "provided"
+libraryDependencies += ("org.apache.druid" % "druid-server" % druid_version exclude("io.dropwizard.metrics", "metrics-core")) % "provided"
+libraryDependencies += ("org.apache.druid" % "druid-indexing-service" % druid_version exclude("io.dropwizard.metrics", "metrics-core")) % "provided"
+libraryDependencies += ("org.apache.druid" % "druid-indexing-hadoop" % druid_version exclude("io.dropwizard.metrics", "metrics-core")) % "provided"
 libraryDependencies +=
   "org.joda" % "joda-convert" % "1.8.1" % "provided" // Prevents intellij silliness and sbt warnings
 libraryDependencies += "com.google.guava" % "guava" % guava_version % "provided"// Prevents serde problems for guice exceptions
