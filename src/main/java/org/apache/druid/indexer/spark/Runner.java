@@ -19,7 +19,6 @@
 
 package org.apache.druid.indexer.spark;
 
-import org.apache.druid.indexer.spark.SparkBatchIndexTask;
 
 import java.util.ArrayList;
 

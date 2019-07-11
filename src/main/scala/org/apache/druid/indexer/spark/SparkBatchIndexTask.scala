@@ -151,7 +151,7 @@ class SparkBatchIndexTask(
       log.debug("Sending task `%s`", task)
 
       val result = HadoopTask.invokeForeignLoader[util.ArrayList[String], util.ArrayList[String]](
-        "Runner",
+        "org.apache.druid.indexer.spark.Runner",
         new util.ArrayList(List(
           task,
           Iterables.getOnlyElement(toolbox.getTaskActionClient.submit(new LockListAction())).getVersion,
@@ -273,7 +273,7 @@ object SparkBatchIndexTask
   private[SparkBatchIndexTask] val allowedPrefixes = Seq(
     "com.metamx",
     "druid",
-    "io.druid",
+    "org.apache.druid",
     "hadoop"
   )
 

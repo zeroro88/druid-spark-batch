@@ -49,6 +49,8 @@ val sparkDep = ("org.apache.spark" %% "spark-core" % spark_version
   exclude("org.eclipse.jetty", "jetty-http")
   exclude("org.eclipse.jetty", "jetty-servlet")
   exclude("com.esotericsoftware.minlog", "minlog")
+  exclude("io.dropwizard.metrics", "metrics-json")
+  exclude("io.dropwizard.metrics", "metrics-core")
   /*
   exclude("com.fasterxml.jackson.core", "jackson-core")
   exclude("com.fasterxml.jackson.core", "jackson-annotations")
@@ -60,6 +62,16 @@ val sparkDep = ("org.apache.spark" %% "spark-core" % spark_version
   exclude("org.apache.mesos", "mesos")
   ) % "provided"
 libraryDependencies += sparkDep
+libraryDependencies += "org.apache.spark" %% "spark-network-common" % spark_version
+libraryDependencies += "org.apache.spark" %% "spark-network-shuffle" % spark_version
+libraryDependencies += "org.apache.spark" %% "spark-unsafe" % spark_version
+libraryDependencies += "org.apache.spark" %% "spark-kvstore" % spark_version
+libraryDependencies += "org.apache.spark" %% "spark-launcher" % spark_version
+libraryDependencies += "org.json4s" %% "json4s-ast" % "3.5.3"
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
+libraryDependencies += "org.glassfish.jersey.containers" % "jersey-container-servlet-core" % "2.22.2"
+libraryDependencies += "io.dropwizard.metrics" % "metrics-json" % "4.1.0"
+libraryDependencies += "io.dropwizard.metrics" % "metrics-core" % "4.1.0"
 
 val hadoopDep = ("org.apache.hadoop" % "hadoop-client" % hadoop_version
   exclude("asm", "asm")
